@@ -13,7 +13,7 @@ const chatRepository = require('./repositories/chat-repository');
 const config = require('../../config');
 const util = require('./lib/util');
 const mapUtils = require('./map/map');
-const {getPosition} = require("./lib/entityUtils");
+const {getPosition, isSweptCircleCollision} = require("./lib/entityUtils");
 
 let map = new mapUtils.Map(config);
 
@@ -262,6 +262,24 @@ const tickPlayer = (currentPlayer) => {
 const tickGame = () => {
     map.players.data.forEach(tickPlayer);
     map.massFood.move(config.gameWidth, config.gameHeight);
+    map.viruses.move(config.gameWidth, config.gameHeight);
+
+    const massEatenByViruses = [];
+    map.massFood.data.forEach((mass, massIndex) => {
+        const virus = map.viruses.data.find(virus => {
+            const collisionRadius = mass.radius + virus.radius;
+            const previousMass = {x: mass.previousX === undefined ? mass.x : mass.previousX,
+                y: mass.previousY === undefined ? mass.y : mass.previousY};
+            const previousVirus = {x: virus.previousX === undefined ? virus.x : virus.previousX,
+                y: virus.previousY === undefined ? virus.y : virus.previousY};
+            return isSweptCircleCollision(mass, previousMass, virus, previousVirus, collisionRadius);
+        });
+        if (virus) {
+            map.viruses.feed(virus, mass.direction);
+            massEatenByViruses.push(massIndex);
+        }
+    });
+    map.massFood.remove(massEatenByViruses);
 
     map.players.handleCollisions(function (gotEaten, eater) {
         const cellGotEaten = map.players.getCell(gotEaten.playerIndex, gotEaten.cellIndex);

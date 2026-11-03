@@ -140,12 +140,10 @@ var graph = c.getContext('2d');
 
 $("#feed").click(function () {
     socket.emit('1');
-    window.canvas.reenviar = false;
 });
 
 $("#split").click(function () {
     socket.emit('2');
-    window.canvas.reenviar = false;
 });
 
 function handleDisconnect() {

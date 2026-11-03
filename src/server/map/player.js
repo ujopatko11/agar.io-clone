@@ -5,7 +5,7 @@ const sat = require('sat');
 const gameLogic = require('../game-logic');
 
 const MIN_SPEED = 6.25;
-const SPLIT_CELL_SPEED = 20;
+const SPLIT_CELL_SPEED = 25;
 const SPEED_DECREMENT = 0.5;
 const MIN_DISTANCE = 50;
 const PUSHING_AWAY_SPEED = 1.1;

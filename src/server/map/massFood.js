@@ -22,6 +22,8 @@ exports.MassFood = class {
     }
 
     move(gameWidth, gameHeight) {
+        this.previousX = this.x;
+        this.previousY = this.y;
         var deltaX = this.speed * this.direction.x;
         var deltaY = this.speed * this.direction.y;
 
